@@ -1,0 +1,150 @@
+#!/bin/bash
+
+terminal="/bin/bash"
+set -e
+
+if (("$#" == 1)); then
+	echo -e "one option.\n"
+
+	if [[ "$1" = "--help" ]]; then
+	echo '
+	./0boot <folder>
+	./0boot [option] <folder>
+
+	Only one option is allowed!
+
+	install [options]: arch wheezy sid percise raring fedora
+		This will download a prepared tar.xz file to ~/.0boot/ and extract to your given folder
+
+	chroot [options]: chroot fakechroot proot exit
+		Order of automatic choice by 0boot
+
+		1. root + systemd (full access)
+		2. root + mount + bind (full access)
+		3. user + fakechroot + fakeroot + chroot (works only if you chroot the same distribution as you are using)
+		4. proot (only read/run access)
+
+
+	EXAMPLES
+
+	:~$ ./0boot arch mychrootarch
+	This will download arch.tar.xz to ~/.0boot/ if not available and extract it to mychrootarch/
+
+	:~$ ./0boot mychrootarch/
+	As you can see, you are not root. 0boot will first try to use fakechroot. If it is not available, it will try proot.
+
+	:~$ ./0boot proot mychrootarch/
+	you can force one methode
+
+	:~# ./0boot mychrootarch/
+	If you are running a systemd linux, 0boot will use systemd for chroot. Otherwise it falls back to classic chroot methode with mount -t
+
+	:~# ./0boot chroot mychrootarch/
+	Force classic chroot methode.
+
+	:~# ./0boot exit mychrootarch/
+	This will umount the mount commands from classic methode.
+
+	'
+	exit
+	fi
+
+	if [ "$UID" -ne 0 ]; then
+
+                if which fakechroot >/dev/null; then
+                        export FAKECHROOT_EXCLUDE_PATH=/proc:/dev:/sys
+                        fakechroot -s fakeroot chroot $1
+                elif which proot >/dev/null; then
+                        proot -r $1
+                else
+                        echo -e "I can not find fakechroot nor proot, nor are root. Sorry.\n"
+                fi
+
+	else
+                if which systemd-nspawn >/dev/null; then
+                        systemd-nspawn -D $1
+                else
+			echo -e "\nRunning classic chroot with mount -t. Pleace execute ./0boot exit <folder> when you're done\n\n"
+                        mount -t devtmpfs /dev $1/dev
+                        mount -t devpts /dev/pts $1/dev/pts
+                        mount -t sysfs /sys $1/sys
+                        mount -t proc /proc $1/proc
+                        chroot $1 $terminal
+                fi
+	fi
+
+elif (("$#" == 2)); then
+
+	if [[ "$1" = "arch" ]]; then
+                mkdir -p ~/.0boot/
+                mkdir -p $2
+                if [ -f ~/.0boot/arch.tar.xz ]; then
+                        tar -C $2 -xf ~/.0boot/arch.tar.xz
+                else
+                        wget -P ~/.0boot/ http://0boot.osuv.de/arch.tar.xz
+                        tar -C $2 -xf ~/.0boot/arch.tar.xz
+                fi
+
+	elif [[ "$1" = "wheezy" ]]; then
+                mkdir -p ~/.0boot/
+                mkdir -p $2
+                if [ -f ~/.0boot/wheezy.tar.xz ]; then
+                        tar -C $2 -xf ~/.0boot/wheezy.tar.xz
+                else
+                        wget -P ~/.0boot/ http://0boot.osuv.de/wheezy.tar.xz
+                        tar -C $2 -xf ~/.0boot/wheezy.tar.xz
+                fi
+
+	elif [[ "$1" = "precise" ]]; then
+                mkdir -p ~/.0boot/
+		mkdir -p $2
+                if [ -f ~/.0boot/precise.tar.xz ]; then
+                        tar -C $2 -xf ~/.0boot/precise.tar.xz
+                else
+                        wget -P ~/.0boot/ http://0boot.osuv.de/precise.tar.xz
+                        tar -C $2 -xf ~/.0boot/precise.tar.xz
+                fi
+
+        elif [[ "$1" = "raring" ]]; then
+                mkdir -p ~/.0boot/
+                mkdir -p $2
+                if [ -f ~/.0boot/raring.tar.xz ]; then
+                        tar -C $2 -xf ~/.0boot/raring.tar.xz
+                else
+                        wget -P ~/.0boot/ http://0boot.osuv.de/raring.tar.xz
+                        tar -C $2 -xf ~/.0boot/raring.tar.xz
+                fi
+
+	elif [[ "$1" = "fedora" ]]; then
+		mkdir -p ~/.0boot/
+		mkdir -p $2
+		if [ -f ~/.0boot/fedora.tar.xz ]; then
+			tar -C $2 -xf ~/.0boot/fedora.tar.xz
+		else
+			wget -P ~/.0boot/ http://0boot.osuv.de/fedora.tar.xz
+			tar -C $2 -xf ~/.0boot/fedora.tar.xz
+		fi
+	elif [[ "$1" = "exit" ]]; then
+                 umount $2/dev
+                 umount $2/dev/pts
+                 umount $2/sys
+                 umount $2/proc
+	elif [[ "$1" = "proot" ]]; then
+		proot -r $2
+	elif [[ "$1" = "fakechroot" ]]; then
+		export FAKECHROOT_EXCLUDE_PATH=/proc:/dev:/sys
+                fakechroot -s fakeroot chroot $2
+	elif [[ "$1" = "systemd" ]]; then
+		systemd-nspawn -D $2
+	elif [[ "$1" = "chroot" ]]; then
+                mount -t devtmpfs /dev $2/dev
+                mount -t devpts /dev/pts $2/dev/pts
+                mount -t sysfs /sys $2/sys
+                mount -t proc /proc $2/proc
+                chroot $2 $terminal
+	else
+		echo -e "unknown option\n"
+	fi
+else
+	echo -e "wrong usage.\n"
+fi

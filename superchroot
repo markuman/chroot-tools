@@ -1,0 +1,85 @@
+#!/bin/bash
+# WTFPL
+
+terminal="/bin/bash"
+set -e
+
+if (("$#" == 1)); then
+
+        if [[ "$1" = "--help" ]]; then
+        echo '
+        superchroot <folder>
+        superchroot [chroot-option] <folder>
+
+        [chroot options]: systemd (root), chroot (root), fakechroot, proot, exit (umount directories from chroot methode)
+
+
+        EXAMPLES - force method
+        ~$: su -c "superchroot systemd arch/"
+        ~$: sudo superchroot chroot arch/
+        ~$: superchroot proot arch/
+        ~$: superchroot fakechroot arch/
+
+        EXAMPLES - automaticaly best choice
+        ~#: superchroot arch/
+        ~$: superchroot arch/
+	'
+	exit
+	fi
+
+        if [ "$UID" -ne 0 ]; then
+
+                if which fakechroot >/dev/null; then
+			echo -e "fakechroot found...\n"
+                        export FAKECHROOT_EXCLUDE_PATH=/proc:/dev:/sys
+                        fakechroot -s fakeroot chroot $1
+                elif which proot >/dev/null; then
+			echo -e "proot found ...\n"
+                        proot -r $1
+                else
+                        echo -e "I can not find fakechroot nor proot, nor are root. Sorry, but I can\'t chroot.\n"
+                fi
+        else
+                if which systemd-nspawn >/dev/null; then
+                        systemd-nspawn -D $1
+                else
+                        echo -e "\nRunning classic chroot with mount -t... \n\n"
+                        mount -t devtmpfs /dev $1/dev
+                        mount -t devpts /dev/pts $1/dev/pts
+                        mount -t sysfs /sys $1/sys
+                        mount -t proc /proc $1/proc
+                        chroot $1 $terminal
+                fi
+        fi
+
+elif (("$#" == 2)); then
+
+        if [[ "$1" = "exit" ]]; then
+		echo -e "trying to umount used directories from chroot option...\n\n"
+                 umount $2/dev
+                 umount $2/dev/pts
+                 umount $2/sys
+                 umount $2/proc
+        elif [[ "$1" = "proot" ]]; then
+        	echo -e "forcing proot method...\n\n"
+                proot -r $2
+        elif [[ "$1" = "fakechroot" ]]; then
+        	echo -e "forcing fakechroot method...\n\n"
+                export FAKECHROOT_EXCLUDE_PATH=/proc:/dev:/sys
+                fakechroot -s fakeroot chroot $2
+        elif [[ "$1" = "systemd" ]]; then
+        	echo -e "forcing systemd method...\n\n"
+                systemd-nspawn -D $2
+        elif [[ "$1" = "chroot" ]]; then
+        	echo -e "forcing chroot method...\n\n"
+                mount -t devtmpfs /dev $2/dev
+                mount -t devpts /dev/pts $2/dev/pts
+                mount -t sysfs /sys $2/sys
+                mount -t proc /proc $2/proc
+                chroot $2 $terminal
+        else
+                echo -e "unknown option\n"
+        fi
+else
+        echo -e "wrong usage.\n"
+fi
