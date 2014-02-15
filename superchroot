@@ -42,6 +42,8 @@ if (("$#" == 1)); then
         else
                 if which systemd-nspawn >/dev/null; then
                         systemd-nspawn -D $1
+		elif which arch-chroot >/dev/null; then
+			arch-chroot $1
                 else
                         echo -e "\nRunning classic chroot with mount -t... \n\n"
                         mount -t devtmpfs /dev $1/dev
@@ -77,6 +79,8 @@ elif (("$#" == 2)); then
                 mount -t sysfs /sys $2/sys
                 mount -t proc /proc $2/proc
                 chroot $2 $terminal
+	elif [[ "$1" = "arch" ]]; then
+		arch-chroot $2
         else
                 echo -e "unknown option\n"
         fi
