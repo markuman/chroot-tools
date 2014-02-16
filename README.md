@@ -122,3 +122,74 @@ This work without root privileges only on Debian-based systems.
 
 
 
+# DEBIAN WHEEZY EXAMPLE
+
+NOTE: no root privileges are needed as long as fakechroot is installed
+
+
+	markuman@DEBIAN:~/tmp/chroot-tools$ cat /etc/os-release 
+	PRETTY_NAME="Debian GNU/Linux 7 (wheezy)"
+	NAME="Debian GNU/Linux"
+	VERSION_ID="7"
+	VERSION="7 (wheezy)"
+	ID=debian
+	ANSI_COLOR="1;31"
+	HOME_URL="http://www.debian.org/"
+	SUPPORT_URL="http://www.debian.org/support/"
+	BUG_REPORT_URL="http://bugs.debian.org/"
+	markuman@DEBIAN:~/tmp/chroot-tools$ ./createchroot wheezy/ 
+	I: Retrieving Release
+	I: Retrieving Release.gpg
+	I: Checking Release signature
+	I: Valid Release signature (key id ED6D65271AACF0FF15D123036FB2A1C265FFB764)
+	I: Retrieving Packages
+	I: Validating Packages
+	I: Resolving dependencies of required packages...
+	I: Resolving dependencies of base packages...
+	...
+	I: Configuring aptitude...
+	I: Configuring tasksel...
+	I: Configuring tasksel-data...
+	I: Base system installed successfully.
+	markuman@DEBIAN:~/tmp/chroot-tools$ ./superchroot wheezy/
+	fakechroot found...
+	
+	root@octave-de:/# apt-get update
+	Hit http://cdn.debian.net wheezy Release.gpg
+	Hit http://cdn.debian.net wheezy Release
+	Hit http://cdn.debian.net wheezy/main amd64 Packages
+	Get:1 http://cdn.debian.net wheezy/main Translation-en [3,849 kB]
+	Fetched 3,849 kB in 2s (1,512 kB/s)         
+	Reading package lists... Done
+	root@octave-de:/#
+	root@octave-de:/#
+	root@octave-de:/# htop
+	bash: /usr/bin/htop: No such file or directory
+	root@octave-de:/# apt-get install htop
+	Reading package lists... Done
+	Building dependency tree... Done
+	Suggested packages:
+	  strace ltrace
+	The following NEW packages will be installed:
+	  htop
+	0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+	Need to get 74.9 kB of archives.
+	After this operation, 216 kB of additional disk space will be used.
+	Get:1 http://cdn.debian.net/debian/ wheezy/main htop amd64 1.0.1-1 [74.9 kB]
+	Fetched 74.9 kB in 0s (399 kB/s)
+	Selecting previously unselected package htop.
+	(Reading database ... 9297 files and directories currently installed.)
+	Unpacking htop (from .../htop_1.0.1-1_amd64.deb) ...
+	Processing triggers for man-db ...
+	Setting up htop (1.0.1-1) ...
+	root@octave-de:/# 
+	root@octave-de:/# 
+	root@octave-de:/# htop --version
+	htop 1.0.1 - (C) 2004-2011 Hisham Muhammad
+	Released under the GNU GPL.
+	
+	root@octave-de:/#
+	root@octave-de:/# exit
+	exit
+	markuman@DEBIAN:~/tmp/chroot-tools$ 
+

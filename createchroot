@@ -23,7 +23,7 @@ if (("$#" == 1)); then
 
 
 
-        elif
+        else
 
 		if which pacstrap >/dev/null; then
 			pacstrap -dG $1
@@ -48,6 +48,7 @@ if (("$#" == 1)); then
 #			rpm --root $1/devel -ivh /tmp/fedora-release*rpm
 #			yum --installroot=$1/devel install bash yum
 #			yum --installroot=$1/devel groupinstall "minimal install"
+		else echo -e "ups, error!\n"
 		fi
 	fi
 
@@ -68,7 +69,7 @@ elif (("$#" == 2)); then
 
 
 
-	elif
+	else
 		if [[ "$1" = "arch" ]]; then
 			pacstrap -dG $2
 		elif [[ "$1" = "wheezy" ]]; then
@@ -81,7 +82,7 @@ elif (("$#" == 2)); then
 			debootstrap raring $2 http://de.archive.ubuntu.com/ubuntu
 		elif [[ "$1" = "fedora" ]]; then
 			echo -e "currently not implemented\n"
-		else
+		else echo -e "error\n"
 
 		fi
 	fi
