@@ -17,6 +17,16 @@ if (("$#" == 1)); then
 			fakeroot fakechroot debootstrap precise $1 http://de.archive.ubuntu.com/ubuntu
                 elif [[ "$linux" = "raring" ]]; then
                 	fakeroot fakechroot debootstrap raring $1 http://de.archive.ubuntu.com/ubuntu
+		elif [[ "$1" = "proot" ]]; then
+			current=$(pwd)
+			mkdir -p ~/.bin/proot/ && cd ~/.bin/proot/
+			git clone https://github.com/cedric-vincent/PRoot.git /tmp/proot/
+			make -f /tmp/proot/src/GNUmakefile
+			echo "PATH=$PATH:~/.bin/proot/" >> ~/.bashrc
+			echo "export PATH" >> ~/.bashrc
+			. ~/.bashrc
+			rm -rf /tmp/proot/
+			cd $current
 		else echo -e "Creating chroots environments works without root privilegs only on Debian-based system when fakeroot, fakechroot and debootstrap are installed.\n\n"
 		fi
 

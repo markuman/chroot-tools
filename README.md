@@ -80,8 +80,8 @@ This should work with every host system when proot is installed. But you have on
 Some work is needed to create a edit-able workdirectory for prooted chroot environments.
 
 # getchroot
-They are downloaded automaticaly to `~/.getchroot/` and will be extracted to the given folder.
-
+They are downloaded automaticaly to `~/.getchroot/` and will be extracted to the given folder.  
+Furthermore, `getchroot proot` will download a precompiled proot binary to `~/.bin/proot/` and add it to your ~/.bashrc path.
 
         ./getchroot --help
         ./getchroot <distribution> <folder>
@@ -94,6 +94,9 @@ They are downloaded automaticaly to `~/.getchroot/` and will be extracted to the
 
         :~$ ./getchroot arch mychrootarch
         This will download arch.tar.xz to ~/.getchroot/ if not available and extract it to mychrootarch/
+
+	:~$ ./getchroot proot
+        This will download a precompiled proot binary for x86_64 to ~/.bin/proot/ and add this path to your ~/.bashrc
 
 The fact that the containers are tared as root user, you might be get some extract error for `dev/` devices. This should have no impact!
 
@@ -121,7 +124,8 @@ The fact that the containers are tared as root user, you might be get some extra
 This will setup the chroot folder install on your system.  
 This work without root privileges only on Debian-based systems. 
 
-
+	~$: ./createchroot proot
+	This will git clone the proot source, try to build it to ~/.bin/proot/ and add this path to your ~/.bashrc path
 
 # DEBIAN WHEEZY EXAMPLE
 

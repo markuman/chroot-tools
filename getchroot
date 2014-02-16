@@ -7,21 +7,34 @@ if (("$#" == 1)); then
 
 	if [[ "$1" = "--help" ]]; then
 	echo '
-	./getchroot [distributions] <folder>
+	./getchroot [option] <folder>
 
 	Only one option is allowed!
 
-	[distributions]: arch wheezy sid precise raring fedora
+	[option]: arch wheezy sid precise raring fedora
 		This will download a prepared tar.xz file to ~/.getchroot/ and extract to your given folder
 		THERE MIGHT BE SOME ERRORs WHEN EXTRACTING AS USER - tar: dev/dsp: Cannot mknod: Operation not permitted
 		However, it should work too.
+
+	[option]: proot
 
 	EXAMPLES
 
 	:~$ ./getchroot arch mychrootarch
 	This will download arch.tar.xz to ~/.getchroot/ if not available and extract it to mychrootarch/
+
+	:~$ ./getchroot proot
+	This will download a precompiled proot binary for x86_64 to ~/.bin/proot/ and add this path to your ~/.bashrc
 	'
 	exit
+	elif [[ "$1" = "proot" ]]; then
+		echo -e "wget prebuild x86_64 proot binary\n"
+		mkdir -p ~/.bin/proot/
+		wget -O ~/.bin/proot/proot http://static.proot.me/proot-x86_64
+		chmod u+x ~/.bin/proot/proot
+		echo "PATH=\$PATH:~/.bin/proot/" >> ~/.bashrc
+		echo "export PATH" >> ~/.bashrc
+                . ~/.bashrc
 	fi
 
 elif (("$#" == 2)); then
