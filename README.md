@@ -20,8 +20,9 @@ chroot-tools
 * figure out better proot usage
 * improve `createchroot` and write a small dokumentation
 * sumcheck for existing file -> compare to mirror -> redownload?
+* improvements for ubuntu debootstraps and the dash error messages
 
-## current status
+## current status - 1.0
 
 Debian (sid + wheezy), Arch and Fedora images are fine. For Ubuntu contrainers you may get `dash` errors on non `dash` systems.
 
@@ -37,11 +38,11 @@ as your host system.
 
         host	image>>         Raring          Precise         Wheezy          Fedora         Arch
      
-        Saucy         		  yes             no              no              yes             no
-        Precise        		 no              yes             no              no              no
-        Wheezy        		  no              no              yes             no              no
-        Fedora        		  no              no              no              yes             no
-        Arch          		  no              no              no              no              yes
+        Saucy         		  yes               no              no              yes            no
+        Precise        		  no                yes             no              no             no
+        Wheezy        		  no                no              yes             no             no
+        Fedora        		  no                no              no              yes            no
+        Arch          		  no                no              no              no             yes
 
 There are glibc conflicts if host system != chroot system. So for example on Fedora Host, setting up a Fedora chroot.
 
