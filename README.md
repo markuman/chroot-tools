@@ -293,4 +293,19 @@ NOTE: no root privileges are needed as long as fakechroot is installed
 	
 	Complete!
 	[root@octave-de /]# 
+	[root@octave-de /]# cat /etc/os-release 
+	NAME=Fedora
+	VERSION="19 (Schrödinger’s Cat)"
+	ID=fedora
+	VERSION_ID=19
+	PRETTY_NAME="Fedora 19 (Schrödinger’s Cat)"
+	ANSI_COLOR="0;34"
+	CPE_NAME="cpe:/o:fedoraproject:fedora:19"
+	HOME_URL="https://fedoraproject.org/"
+	BUG_REPORT_URL="https://bugzilla.redhat.com/"
+	REDHAT_BUGZILLA_PRODUCT="Fedora"
+	REDHAT_BUGZILLA_PRODUCT_VERSION=%{bug_version}
+	REDHAT_SUPPORT_PRODUCT="Fedora"
+	REDHAT_SUPPORT_PRODUCT_VERSION=%{bug_version}
+	[root@octave-de /]# 
 
