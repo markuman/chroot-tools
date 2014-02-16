@@ -1,0 +1,88 @@
+#!/bin/bash
+
+terminal="/bin/bash"
+set -e
+
+if (("$#" == 1)); then
+
+        if [ "$UID" -ne 0 ]; then
+
+		# user + debian-based
+		linux=$(lsb_release -c|awk {'print $2'})
+		if [[ "$linux" = "wheezy" ]]; then
+			fakeroot fakechroot debootstrap wheezy $1 http://cdn.debian.net/debian/
+		elif [[ "$linux" = "sid" ]]; then
+                        fakeroot fakechroot debootstrap sid $1 http://cdn.debian.net/debian/
+		elif [[ "$linux" = "precise" ]]; then
+			fakeroot fakechroot debootstrap precise $1 http://de.archive.ubuntu.com/ubuntu
+                elif [[ "$linux" = "raring" ]]; then
+                	fakeroot fakechroot debootstrap raring $1 http://de.archive.ubuntu.com/ubuntu
+		else echo -e "Creating chroots environments works without root privilegs only on Debian-based system when fakeroot, fakechroot and debootstrap are installed.\n\n"
+		fi
+
+
+
+
+        elif
+
+		if which pacstrap >/dev/null; then
+			pacstrap -dG $1
+		elif which debootstrap >/dev/null; then
+			linux=$(lsb_release -c|awk {'print $2'})
+	                if [[ "$linux" = "wheezy" ]]; then
+        	                debootstrap wheezy $1 http://cdn.debian.net/debian/
+                	elif [[ "$linux" = "sid" ]]; then
+                        	debootstrap sid $1 http://cdn.debian.net/debian/
+	                elif [[ "$linux" = "precise" ]]; then
+        	                debootstrap precise $1 http://de.archive.ubuntu.com/ubuntu
+                	elif [[ "$linux" = "raring" ]]; then
+                        	debootstrap raring $1 http://de.archive.ubuntu.com/ubuntu
+			else echo -e "unsupported debian distribution \n"
+			fi
+
+		elif which yum >/dev/null; then
+			echo -e "currently commented out, because it need a / directory\n"
+#			mkdir -p $1/devel/var/lib/rpm
+#			rpm --root $1/devel --initdb
+#			yumdownloader --destdir=/tmp fedora-release
+#			rpm --root $1/devel -ivh /tmp/fedora-release*rpm
+#			yum --installroot=$1/devel install bash yum
+#			yum --installroot=$1/devel groupinstall "minimal install"
+		fi
+	fi
+
+elif (("$#" == 2)); then
+
+        if [ "$UID" -ne 0 ]; then
+
+                if [[ "$1" = "wheezy" ]]; then
+                        fakeroot fakechroot debootstrap wheezy $2 http://cdn.debian.net/debian/
+                elif [[ "$1" = "sid" ]]; then
+                        fakeroot fakechroot debootstrap sid $2 http://cdn.debian.net/debian/
+                elif [[ "$1" = "precise" ]]; then
+                        fakeroot fakechroot debootstrap precise $2 http://de.archive.ubuntu.com/ubuntu
+                elif [[ "$1" = "raring" ]]; then
+                        fakeroot fakechroot debootstrap raring $2 http://de.archive.ubuntu.com/ubuntu
+                else echo -e "unsupported distribution \n"
+                fi
+
+
+
+	elif
+		if [[ "$1" = "arch" ]]; then
+			pacstrap -dG $2
+		elif [[ "$1" = "wheezy" ]]; then
+			debootstrap wheezy $2 http://cdn.debian.net/debian/
+		elif [[ "$1" = "sid" ]]; then
+			debootstrap sid $2 http://cdn.debian.net/debian/
+		elif [[ "$1" = "precise" ]]; then
+			debootstrap precise $2 http://de.archive.ubuntu.com/ubuntu
+		elif [[ "$1" = "raring" ]]; then
+			debootstrap raring $2 http://de.archive.ubuntu.com/ubuntu
+		elif [[ "$1" = "fedora" ]]; then
+			echo -e "currently not implemented\n"
+		else
+
+		fi
+	fi
+fi
