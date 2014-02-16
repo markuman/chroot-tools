@@ -138,6 +138,10 @@ NOTE: no root privileges are needed as long as fakechroot is installed
 	HOME_URL="http://www.debian.org/"
 	SUPPORT_URL="http://www.debian.org/support/"
 	BUG_REPORT_URL="http://bugs.debian.org/"
+	markuman@octave-de:~/tmp/chroot-tools$
+	markuman@octave-de:~/tmp/chroot-tools$
+	markuman@octave-de:~/tmp/chroot-tools$ # INSTALL WHEEZY CHROOT WITHOUT ROOT PRIVILEGS #
+	markuman@octave-de:~/tmp/chroot-tools$
 	markuman@octave-de:~/tmp/chroot-tools$ ./createchroot wheezy/ 
 	I: Retrieving Release
 	I: Retrieving Release.gpg
@@ -152,9 +156,18 @@ NOTE: no root privileges are needed as long as fakechroot is installed
 	I: Configuring tasksel...
 	I: Configuring tasksel-data...
 	I: Base system installed successfully.
+	markuman@octave-de:~/tmp/chroot-tools$
+	markuman@octave-de:~/tmp/chroot-tools$
+	markuman@octave-de:~/tmp/chroot-tools$ # now superchroot it
+	markuman@octave-de:~/tmp/chroot-tools$
+	markuman@octave-de:~/tmp/chroot-tools$
 	markuman@octave-de:~/tmp/chroot-tools$ ./superchroot wheezy/
 	fakechroot found...
-	
+	root@octave-de:/#
+	root@octave-de:/#
+	root@octave-de:/# # LET'S DO APT-GET UPDATE AND INSTALL HTOP #
+	root@octave-de:/#
+	root@octave-de:/#
 	root@octave-de:/# apt-get update
 	Hit http://cdn.debian.net wheezy Release.gpg
 	Hit http://cdn.debian.net wheezy Release
@@ -162,6 +175,8 @@ NOTE: no root privileges are needed as long as fakechroot is installed
 	Get:1 http://cdn.debian.net wheezy/main Translation-en [3,849 kB]
 	Fetched 3,849 kB in 2s (1,512 kB/s)         
 	Reading package lists... Done
+	root@octave-de:/#
+	root@octave-de:/#
 	root@octave-de:/#
 	root@octave-de:/#
 	root@octave-de:/# htop
@@ -184,6 +199,8 @@ NOTE: no root privileges are needed as long as fakechroot is installed
 	Processing triggers for man-db ...
 	Setting up htop (1.0.1-1) ...
 	root@octave-de:/# 
+	root@octave-de:/#
+	root@octave-de:/#
 	root@octave-de:/# 
 	root@octave-de:/# htop --version
 	htop 1.0.1 - (C) 2004-2011 Hisham Muhammad
@@ -193,6 +210,10 @@ NOTE: no root privileges are needed as long as fakechroot is installed
 	root@octave-de:/# exit
 	exit
 	markuman@octave-de:~/tmp/chroot-tools$ 
+	markuman@octave-de:~/tmp/chroot-tools$
+	markuman@octave-de:~/tmp/chroot-tools$ # LET'S GET SID #
+	markuman@octave-de:~/tmp/chroot-tools$
+	markuman@octave-de:~/tmp/chroot-tools$
 	markuman@octave-de:~/tmp/chroot-tools$ ./getchroot sid sid/
 	--2014-02-16 15:48:56--  http://getchroot.osuv.de/sid.tar.xz
 	Resolving getchroot.osuv.de (getchroot.osuv.de)... 164.138.25.251, 2a02:2770::21a:4aff:fe34:f698
@@ -207,10 +228,19 @@ NOTE: no root privileges are needed as long as fakechroot is installed
 	
 	tar: dev/ram14: Cannot mknod: Operation not permitted
 	...
+	markuman@octave-de:~/tmp/chroot-tools$
+	markuman@octave-de:~/tmp/chroot-tools$
+	markuman@octave-de:~/tmp/chroot-tools$ # LET'S TRY SUPERCHROOT #
+	markuman@octave-de:~/tmp/chroot-tools$
 	markuman@octave-de:~/tmp/chroot-tools$ ./superchroot sid/
 	fakechroot found...
 	
 	/usr/sbin/chroot: error while loading shared libraries: __vdso_time: invalid mode for dlopen(): Invalid argument
+	markuman@octave-de:~/tmp/chroot-tools$
+	markuman@octave-de:~/tmp/chroot-tools$
+	markuman@octave-de:~/tmp/chroot-tools$ # NOW WITH ROOT PRIVILEGS #
+	markuman@octave-de:~/tmp/chroot-tools$
+	markuman@octave-de:~/tmp/chroot-tools$
 	markuman@octave-de:~/tmp/chroot-tools$ su -c "./superchroot sid/"
 	Password: 
 	
@@ -218,8 +248,10 @@ NOTE: no root privileges are needed as long as fakechroot is installed
 	
 	
 	bash: no job control in this shell
-	root@octave-de:/# ls
-	bin  boot  dev	etc  home  lib	lib64  media  mnt  opt	proc  root  run  sbin  srv  sys  tmp  usr  var
+
+	root@octave-de:/#
+	root@octave-de:/#
+	root@octave-de:/#
 	root@octave-de:/# cat /etc/os-release 
 	PRETTY_NAME="Debian GNU/Linux jessie/sid"
 	NAME="Debian GNU/Linux"
@@ -231,6 +263,11 @@ NOTE: no root privileges are needed as long as fakechroot is installed
         root@octave-de:/#
         root@octave-de:/# exit
         exit
+        markuman@octave-de:~/tmp/chroot-tools$
+        markuman@octave-de:~/tmp/chroot-tools$
+        markuman@octave-de:~/tmp/chroot-tools$ # LET'S GET FEDORA #
+        markuman@octave-de:~/tmp/chroot-tools$
+        markuman@octave-de:~/tmp/chroot-tools$
 	markuman@octave-de:~/tmp/chroot-tools$ ./getchroot fedora fedora/
 	--2014-02-16 15:54:18--  http://getchroot.osuv.de/fedora.tar.xz
 	Resolving getchroot.osuv.de (getchroot.osuv.de)... 164.138.25.251, 2a02:2770::21a:4aff:fe34:f698
@@ -250,6 +287,10 @@ NOTE: no root privileges are needed as long as fakechroot is installed
 	
 	
 	bash: no job control in this shell
+	[root@octave-de /]#
+	[root@octave-de /]# 
+	[root@octave-de /]# ###### WELCOME TO FEDORA :) #
+	[root@octave-de /]#
 	[root@octave-de /]# yum update
 	No packages marked for update
 	[root@octave-de /]# echo "nameserver 8.8.8.8" > /etc/resolv.conf
@@ -293,6 +334,8 @@ NOTE: no root privileges are needed as long as fakechroot is installed
 	
 	Complete!
 	[root@octave-de /]# 
+	[root@octave-de /]#
+	[root@octave-de /]#
 	[root@octave-de /]# cat /etc/os-release 
 	NAME=Fedora
 	VERSION="19 (Schrödinger’s Cat)"
