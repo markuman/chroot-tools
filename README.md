@@ -24,7 +24,8 @@ chroot-tools
 
 ## current status - 1.0
 
-Debian (sid + wheezy), Arch and Fedora images are fine. For Ubuntu contrainers you may get `dash` errors on non `dash` systems.
+* Debian (sid + wheezy), Arch and Fedora images are fine. For Ubuntu contrainers you may get `dash` errors on non `dash` systems.
+* Take care for network connectivity in your chroot. `echo "nameserver 8.8.8.8 > /etc/resolv.conf`
 
 
 # superchroot
@@ -127,7 +128,7 @@ This work without root privileges only on Debian-based systems.
 NOTE: no root privileges are needed as long as fakechroot is installed
 
 
-	markuman@DEBIAN:~/tmp/chroot-tools$ cat /etc/os-release 
+	markuman@octave-de:~/tmp/chroot-tools$ cat /etc/os-release 
 	PRETTY_NAME="Debian GNU/Linux 7 (wheezy)"
 	NAME="Debian GNU/Linux"
 	VERSION_ID="7"
@@ -137,7 +138,7 @@ NOTE: no root privileges are needed as long as fakechroot is installed
 	HOME_URL="http://www.debian.org/"
 	SUPPORT_URL="http://www.debian.org/support/"
 	BUG_REPORT_URL="http://bugs.debian.org/"
-	markuman@DEBIAN:~/tmp/chroot-tools$ ./createchroot wheezy/ 
+	markuman@octave-de:~/tmp/chroot-tools$ ./createchroot wheezy/ 
 	I: Retrieving Release
 	I: Retrieving Release.gpg
 	I: Checking Release signature
@@ -151,7 +152,7 @@ NOTE: no root privileges are needed as long as fakechroot is installed
 	I: Configuring tasksel...
 	I: Configuring tasksel-data...
 	I: Base system installed successfully.
-	markuman@DEBIAN:~/tmp/chroot-tools$ ./superchroot wheezy/
+	markuman@octave-de:~/tmp/chroot-tools$ ./superchroot wheezy/
 	fakechroot found...
 	
 	root@octave-de:/# apt-get update
@@ -191,5 +192,105 @@ NOTE: no root privileges are needed as long as fakechroot is installed
 	root@octave-de:/#
 	root@octave-de:/# exit
 	exit
-	markuman@DEBIAN:~/tmp/chroot-tools$ 
+	markuman@octave-de:~/tmp/chroot-tools$ 
+	markuman@octave-de:~/tmp/chroot-tools$ ./getchroot sid sid/
+	--2014-02-16 15:48:56--  http://getchroot.osuv.de/sid.tar.xz
+	Resolving getchroot.osuv.de (getchroot.osuv.de)... 164.138.25.251, 2a02:2770::21a:4aff:fe34:f698
+	Connecting to getchroot.osuv.de (getchroot.osuv.de)|164.138.25.251|:80... connected.
+	HTTP request sent, awaiting response... 200 OK
+	Length: 109898428 (105M) [application/octet-stream]
+	Saving to: `/home/markuman/.getchroot/sid.tar.xz'
+	
+	100%[=============================================================================================================================>] 109,898,428 	33.0M/s   in 3.2s    
+	
+	2014-02-16 15:49:00 (33.0 MB/s) - `/home/markuman/.getchroot/sid.tar.xz' saved [109898428/109898428]
+	
+	tar: dev/ram14: Cannot mknod: Operation not permitted
+	...
+	markuman@octave-de:~/tmp/chroot-tools$ ./superchroot sid/
+	fakechroot found...
+	
+	/usr/sbin/chroot: error while loading shared libraries: __vdso_time: invalid mode for dlopen(): Invalid argument
+	markuman@octave-de:~/tmp/chroot-tools$ su -c "./superchroot sid/"
+	Password: 
+	
+	Running classic chroot with mount -t... 
+	
+	
+	bash: no job control in this shell
+	root@octave-de:/# ls
+	bin  boot  dev	etc  home  lib	lib64  media  mnt  opt	proc  root  run  sbin  srv  sys  tmp  usr  var
+	root@octave-de:/# cat /etc/os-release 
+	PRETTY_NAME="Debian GNU/Linux jessie/sid"
+	NAME="Debian GNU/Linux"
+	ID=debian
+	ANSI_COLOR="1;31"
+	HOME_URL="http://www.debian.org/"
+	SUPPORT_URL="http://www.debian.org/support/"
+	BUG_REPORT_URL="http://bugs.debian.org/"
+        root@octave-de:/#
+        root@octave-de:/# exit
+        exit
+	markuman@octave-de:~/tmp/chroot-tools$ ./getchroot fedora fedora/
+	--2014-02-16 15:54:18--  http://getchroot.osuv.de/fedora.tar.xz
+	Resolving getchroot.osuv.de (getchroot.osuv.de)... 164.138.25.251, 2a02:2770::21a:4aff:fe34:f698
+	Connecting to getchroot.osuv.de (getchroot.osuv.de)|164.138.25.251|:80... connected.
+	HTTP request sent, awaiting response... 200 OK
+	Length: 138901036 (132M) [application/octet-stream]
+	Saving to: `/home/markuman/.getchroot/fedora.tar.xz'
+	
+	100%[=============================================================================================================================>] 138,901,036 42.7M/s   in 3.1s    
+	
+	2014-02-16 15:54:21 (42.7 MB/s) - `/home/markuman/.getchroot/fedora.tar.xz' saved [138901036/138901036]
+	
+	markuman@octave-de:~/tmp/chroot-tools$ su -c "./superchroot fedora/"
+	Password: 
+	
+	Running classic chroot with mount -t... 
+	
+	
+	bash: no job control in this shell
+	[root@octave-de /]# yum update
+	No packages marked for update
+	[root@octave-de /]# echo "nameserver 8.8.8.8" > /etc/resolv.conf
+	[root@octave-de /]# yum install htop
+	Resolving Dependencies
+	--> Running transaction check
+	---> Package htop.x86_64 0:1.0.2-2.fc19 will be installed
+	--> Finished Dependency Resolution
+	
+	Dependencies Resolved
+	
+	=======================================================================================================================================================================
+	 Package                              Arch                                   Version                                      Repository                              Size
+	=======================================================================================================================================================================
+	Installing:
+	 htop                                 x86_64                                 1.0.2-2.fc19                                 fedora                                  78 k
+	
+	Transaction Summary
+	=======================================================================================================================================================================
+	Install  1 Package
+	
+	Total download size: 78 k
+	Installed size: 165 k
+	Is this ok [y/d/N]: y
+	
+	Downloading packages:
+	Delta RPMs disabled because /usr/bin/applydeltarpm not installed.
+	htop-1.0.2-2.fc19.x86_64.rpm                                                                                                                    |  78 kB  
+	00:00:00     
+	Running transaction check
+	Running transaction test
+	Transaction test succeeded
+	Running transaction
+	  Installing : htop-1.0.2-2.fc19.x86_64                                                                                                                            
+	1/1 
+	  Verifying  : htop-1.0.2-2.fc19.x86_64                                                                                                                            
+	1/1 
+	
+	Installed:
+	  htop.x86_64 0:1.0.2-2.fc19                                                                                                                                           
+	
+	Complete!
+	[root@octave-de /]# 
 
