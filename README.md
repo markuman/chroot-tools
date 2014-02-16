@@ -34,6 +34,24 @@ Debian (sid + wheezy), Arch and Fedora images are fine. For Ubuntu contrainers y
 as your host system.
 
 
+        superchroot <folder>
+        superchroot [chroot-option] <folder>
+
+        [chroot options]: systemd (root), chroot (root), fakechroot, proot, exit (umount directories from chroot methode)
+
+
+        EXAMPLES - force method
+        ~$: su -c "superchroot systemd arch/"
+        ~$: sudo superchroot chroot arch/
+        ~$: superchroot proot arch/
+        ~$: superchroot fakechroot arch/
+
+        EXAMPLES - automaticaly best choice
+        ~#: superchroot arch/
+        ~$: superchroot arch/
+
+
+
 ### As user – fakechroot
 
         host	image>>         Raring          Precise         Wheezy          Fedora         Arch
