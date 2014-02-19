@@ -3,7 +3,7 @@ chroot-tools
 
 1. `superchroot` – full automatic chroot helper
 2. `getchroot` – download and extract prepared folder installation of sevaral linux distributions. 
-  * supported linux distributions are: Arch Linux, Ubuntu (12.04, 13.04), Debian (Wheezy, Sid), Fedora
+  * supported linux distributions are: Arch Linux, Ubuntu (12.04, 13.04), Debian (squeeze, Wheezy, Sid), Fedora
   * download precompiled proot binary for x86_64
 3. `createchroot`– creates a folder install for sevaral linux distributions  
   * supported linux distributions are: Arch Linux, Ubuntu (12.04, 13.04), Debian (Wheezy, Sid)
@@ -22,7 +22,9 @@ chroot-tools
 * figure out better proot usage
 * improve `createchroot` and write a small dokumentation
 * sumcheck for existing file -> compare to mirror -> redownload?
-* improvements for ubuntu debootstraps and the dash error messages
+* improvements for ubuntu debootstraps and the dash error messages!
+* fix systemd-nspawn für squeeze
+* improve classic chroot methode
 
 ## current status - 1.0
 
