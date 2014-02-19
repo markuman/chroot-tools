@@ -98,6 +98,16 @@ elif (("$#" == 2)); then
 			wget -P ~/.getchroot/ http://getchroot.osuv.de/fedora.tar.xz
 			tar -C $2 -xf ~/.getchroot/fedora.tar.xz
 		fi
+
+	elif [[ "$1" = "squeeze" ]]; then
+                mkdir -p ~/.getchroot/
+                mkdir -p $2
+                if [ -f ~/.getchroot/squeeze.tar.xz ]; then
+                        tar -C $2 -xf ~/.getchroot/squeeze.tar.xz
+                else
+                        wget -P ~/.getchroot/ http://getchroot.osuv.de/squeeze.tar.xz
+                        tar -C $2 -xf ~/.getchroot/squeeze.tar.xz
+                fi
 	else
 		echo -e "unknown option\n"
 	fi
