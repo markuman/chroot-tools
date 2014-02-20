@@ -27,11 +27,13 @@ set_chroot (){
 
         elif [[ "$option" = "chroot" ]]; then
         	printf "forcing chroot method...\n\n"
-                mount -t devtmpfs /dev $folder/dev
-                mount -t devpts /dev/pts $folder/dev/pts
-                mount -t sysfs /sys $folder/sys
-                mount -t proc /proc $folder/proc
-                chroot $folder $terminal
+                if mount | grep $folder/dev > /dev/null; then
+			chroot $folder $terminal
+                else
+                        chroot_mount "$folder"
+                        chroot $folder $terminal
+                fi
+
 
 	elif [[ "$option" = "arch" ]]; then
 		printf "forcing arch-chroot method...\n\n"
@@ -69,8 +71,12 @@ super_chroot(){
 
                 else
                         printf "\nRunning classic chroot with mount -t... \n\n"
-			chroot_mount "$folder"
-                        chroot $folder $terminal
+			if mount | grep $folder/dev > /dev/null; then
+				chroot $folder $terminal
+			else
+				chroot_mount "$folder"
+        	                chroot $folder $terminal
+			fi
                 fi
         fi
 
