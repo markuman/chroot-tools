@@ -146,7 +146,7 @@ if (("$#" == 1)); then
         if [[ "$1" = "--help" ]]; then
 		print_help
 		exit
-		fi
+	fi
 
 	folder=$1
 	super_chroot "$@"
