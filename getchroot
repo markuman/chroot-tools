@@ -3,6 +3,20 @@
 terminal="/bin/bash"
 set -e
 
+GET_URL=http://getchroot.osuv.de
+_CHROOT=~/.getchroot
+
+function build_chroot {
+	mkdir -p $_CHROOT/
+	mkdir -p $2
+	if [ -f $_CHROOT/$1.tar.xz ]; then
+		tar -C $2 -xf $_CHROOT/$1.tar.xz
+	else
+		wget -P $_CHROOT/ $GET_URL/$1.tar.xz
+		tar -C $2 -xf $_CHROOT/$1.tar.xz
+	fi
+}
+
 if (("$#" == 1)); then
 
 	if [[ "$1" = "--help" ]]; then
@@ -39,78 +53,17 @@ if (("$#" == 1)); then
 
 elif (("$#" == 2)); then
 
-	if [[ "$1" = "arch" ]]; then
-                mkdir -p ~/.getchroot/
-                mkdir -p $2
-                if [ -f ~/.getchroot/arch.tar.xz ]; then
-                        tar -C $2 -xf ~/.getchroot/arch.tar.xz
-                else
-                        wget -P ~/.getchroot/ http://getchroot.osuv.de/arch.tar.xz
-                        tar -C $2 -xf ~/.getchroot/arch.tar.xz
-                fi
+	case "$1" in
+		"arch") 	build_chroot $1 $2 ;;
+		"wheezy") 	build_chroot $1 $2 ;;
+		"sid") 		build_chroot $1 $2 ;;
+		"precise") 	build_chroot $1 $2 ;;
+		"raring") 	build_chroot $1 $2 ;;
+		"fedora") 	build_chroot $1 $2 ;;
+		"squeeze") 	build_chroot $1 $2 ;;
+		*)		echo -e "unknown option\n" ;;
+	esac
 
-	elif [[ "$1" = "wheezy" ]]; then
-                mkdir -p ~/.getchroot/
-                mkdir -p $2
-                if [ -f ~/.getchroot/wheezy.tar.xz ]; then
-                        tar -C $2 -xf ~/.getchroot/wheezy.tar.xz
-                else
-                        wget -P ~/.getchroot/ http://getchroot.osuv.de/wheezy.tar.xz
-                        tar -C $2 -xf ~/.getchroot/wheezy.tar.xz
-                fi
-
-        elif [[ "$1" = "sid" ]]; then
-                mkdir -p ~/.getchroot/
-                mkdir -p $2
-                if [ -f ~/.getchroot/sid.tar.xz ]; then
-                        tar -C $2 -xf ~/.getchroot/sid.tar.xz
-                else
-                        wget -P ~/.getchroot/ http://getchroot.osuv.de/sid.tar.xz
-                        tar -C $2 -xf ~/.getchroot/sid.tar.xz
-                fi
-
-	elif [[ "$1" = "precise" ]]; then
-                mkdir -p ~/.getchroot/
-		mkdir -p $2
-                if [ -f ~/.getchroot/precise.tar.xz ]; then
-                        tar -C $2 -xf ~/.getchroot/precise.tar.xz
-                else
-                        wget -P ~/.getchroot/ http://getchroot.osuv.de/precise.tar.xz
-                        tar -C $2 -xf ~/.getchroot/precise.tar.xz
-                fi
-
-        elif [[ "$1" = "raring" ]]; then
-                mkdir -p ~/.getchroot/
-                mkdir -p $2
-                if [ -f ~/.getchroot/raring.tar.xz ]; then
-                        tar -C $2 -xf ~/.getchroot/raring.tar.xz
-                else
-                        wget -P ~/.getchroot/ http://getchroot.osuv.de/raring.tar.xz
-                        tar -C $2 -xf ~/.getchroot/raring.tar.xz
-                fi
-
-	elif [[ "$1" = "fedora" ]]; then
-		mkdir -p ~/.getchroot/
-		mkdir -p $2
-		if [ -f ~/.getchroot/fedora.tar.xz ]; then
-			tar -C $2 -xf ~/.getchroot/fedora.tar.xz
-		else
-			wget -P ~/.getchroot/ http://getchroot.osuv.de/fedora.tar.xz
-			tar -C $2 -xf ~/.getchroot/fedora.tar.xz
-		fi
-
-	elif [[ "$1" = "squeeze" ]]; then
-                mkdir -p ~/.getchroot/
-                mkdir -p $2
-                if [ -f ~/.getchroot/squeeze.tar.xz ]; then
-                        tar -C $2 -xf ~/.getchroot/squeeze.tar.xz
-                else
-                        wget -P ~/.getchroot/ http://getchroot.osuv.de/squeeze.tar.xz
-                        tar -C $2 -xf ~/.getchroot/squeeze.tar.xz
-                fi
-	else
-		echo -e "unknown option\n"
-	fi
 else
 	echo -e "getchroot --help\n"
 fi
