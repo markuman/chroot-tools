@@ -1,6 +1,5 @@
 #!/bin/bash
 
-terminal="/bin/bash"
 set -e
 
 GET_URL=http://getchroot.osuv.de
@@ -10,45 +9,72 @@ function build_chroot {
 	mkdir -p $_CHROOT/
 	mkdir -p $2
 	if [ -f $_CHROOT/$1.tar.xz ]; then
-		tar -C $2 -xf $_CHROOT/$1.tar.xz
+		tar -C $2 -xf $_CHROOT/$1.tar.xz 2> /dev/null
 	else
 		wget -P $_CHROOT/ $GET_URL/$1.tar.xz
-		tar -C $2 -xf $_CHROOT/$1.tar.xz
+		tar -C $2 -xf $_CHROOT/$1.tar.xz 2> /dev/null
 	fi
+}
+
+function update_chroot {
+
+	current=$(cat <(curl -s $GET_URL/$1.md5sum))
+	exist=$(md5sum $_CHROOT/$1.tar.xz|awk '{print$1}')
+
+	if [[ "$current" = "$exist" ]]; then
+		printf "No update for %s available\n" "$1"
+	else
+		rm $_CHROOT/$1.tar.xz
+		wget -P $_CHROOT/ $GET_URL/$1.tar.xz
+	fi
+
+}
+
+function print_help {
+
+        echo '
+        ./getchroot [option] <folder>
+
+        [option]: arch squeeze wheezy sid precise raring fedora
+        This will download a prepared tar.xz file to ~/.getchroot/ and extract to your given folder
+
+        [option]: proot
+	This will download a precompiled version of proot for x86_64
+
+        EXAMPLES
+
+        :~$ ./getchroot arch mychrootarch/
+        This will download arch.tar.xz to ~/.getchroot/ if not available and extract it to mychrootarch/
+
+        :~$ ./getchroot proot
+        This will download a precompiled proot binary for x86_64 to ~/.bin/proot/ and add this path to your ~/.bashrc
+
+	:~$ ./getchroot update arch
+	This will compare your local tar.xz container file with the online version. If they are different, it will be downloaded again.
+        '
+
+}
+
+function get_proot {
+
+                printf "wget prebuild x86_64 proot binary\n"
+                mkdir -p ~/.bin/proot/
+                wget -O ~/.bin/proot/proot http://static.proot.me/proot-x86_64
+                chmod u+x ~/.bin/proot/proot
+                echo "PATH=\$PATH:~/.bin/proot/" >> ~/.bashrc
+                echo "export PATH" >> ~/.bashrc
+                . ~/.bashrc
+
 }
 
 if (("$#" == 1)); then
 
 	if [[ "$1" = "--help" ]]; then
-	echo '
-	./getchroot [option] <folder>
+		print_help
+		exit
 
-	Only one option is allowed!
-
-	[option]: arch wheezy sid precise raring fedora
-		This will download a prepared tar.xz file to ~/.getchroot/ and extract to your given folder
-		THERE MIGHT BE SOME ERRORs WHEN EXTRACTING AS USER - tar: dev/dsp: Cannot mknod: Operation not permitted
-		However, it should work too.
-
-	[option]: proot
-
-	EXAMPLES
-
-	:~$ ./getchroot arch mychrootarch
-	This will download arch.tar.xz to ~/.getchroot/ if not available and extract it to mychrootarch/
-
-	:~$ ./getchroot proot
-	This will download a precompiled proot binary for x86_64 to ~/.bin/proot/ and add this path to your ~/.bashrc
-	'
-	exit
 	elif [[ "$1" = "proot" ]]; then
-		echo -e "wget prebuild x86_64 proot binary\n"
-		mkdir -p ~/.bin/proot/
-		wget -O ~/.bin/proot/proot http://static.proot.me/proot-x86_64
-		chmod u+x ~/.bin/proot/proot
-		echo "PATH=\$PATH:~/.bin/proot/" >> ~/.bashrc
-		echo "export PATH" >> ~/.bashrc
-                . ~/.bashrc
+		get_proot
 	fi
 
 elif (("$#" == 2)); then
@@ -61,9 +87,13 @@ elif (("$#" == 2)); then
 		"raring") 	build_chroot $1 $2 ;;
 		"fedora") 	build_chroot $1 $2 ;;
 		"squeeze") 	build_chroot $1 $2 ;;
+		"update")	update_chroot $2 ;;
 		*)		echo -e "unknown option\n" ;;
 	esac
 
 else
-	echo -e "getchroot --help\n"
+        printf "Wrong usage!\n\n"
+        print_help
+        exit
+
 fi
