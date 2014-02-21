@@ -56,13 +56,13 @@ super_chroot(){
 
 chroot_mount() {
 
-	mount proc "$folder/proc" -t proc -o nosuid,noexec,nodev &&
-	mount sys "$folder/sys" -t sysfs -o nosuid,noexec,nodev,ro &&
-	mount udev "$folder/dev" -t devtmpfs -o mode=0755,nosuid &&
-	mount devpts "$folder/dev/pts" -t devpts -o mode=0620,gid=5,nosuid,noexec &&
-	mount shm "$folder/dev/shm" -t tmpfs -o mode=1777,nosuid,nodev &&
-	mount run "$folder/run" -t tmpfs -o nosuid,nodev,mode=0755 &&
-	mount tmp "$folder/tmp" -t tmpfs -o mode=1777,strictatime,nodev,nosuid
+	mount proc "$folder/proc" -t proc
+	mount sys "$folder/sys" -t sysfs
+	mount udev "$folder/dev" -t devtmpfs
+	mount devpts "$folder/dev/pts" -t devpts
+	mount shm "$folder/dev/shm" -t tmpfs
+	mount run "$folder/run" -t tmpfs
+	mount tmp "$folder/tmp" -t tmpfs
 
 }
 
@@ -71,9 +71,9 @@ chroot_umount() {
 	printf "Trying to umount chroot folder ...\n"
 	umount "$folder/proc"
 	umount "$folder/sys"
-	umount "$folder/dev"
 	umount "$folder/dev/pts"
 	umount "$folder/dev/shm"
+	umount "$folder/dev"
 	umount "$folder/run"
 	umount "$folder/tmp"
 
