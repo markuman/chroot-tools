@@ -1,7 +1,38 @@
 #!/bin/bash
 
-terminal="/bin/bash"
 set -e
+
+function make_debian(){
+
+	fakeroot fakechroot debootstrap $linux $folder http://cdn.debian.net/debian/
+
+}
+
+function make_ubuntu(){
+
+	fakeroot fakechroot debootstrap $linux $folder http://archive.ubuntu.com/ubuntu
+
+}
+
+function sudo_make_arch(){
+
+	pacstrap -dGM $folder
+
+}
+
+function make_proot(){
+
+	current=$(pwd)
+ 	mkdir -p ~/.bin/proot/ && cd ~/.bin/proot/
+	git clone https://github.com/cedric-vincent/PRoot.git /tmp/proot/
+	make -f /tmp/proot/src/GNUmakefile
+	echo "PATH=$PATH:~/.bin/proot/" >> ~/.bashrc
+	echo "export PATH" >> ~/.bashrc
+	. ~/.bashrc
+	rm -rf /tmp/proot/
+	cd $current
+
+}
 
 if (("$#" == 1)); then
 
@@ -9,91 +40,69 @@ if (("$#" == 1)); then
 
 		# user + debian-based
 		linux=$(lsb_release -c|awk {'print $2'})
-		if [[ "$linux" = "wheezy" ]]; then
-			fakeroot fakechroot debootstrap wheezy $1 http://cdn.debian.net/debian/
-		elif [[ "$linux" = "sid" ]]; then
-                        fakeroot fakechroot debootstrap sid $1 http://cdn.debian.net/debian/
-		elif [[ "$linux" = "precise" ]]; then
-			fakeroot fakechroot debootstrap precise $1 http://de.archive.ubuntu.com/ubuntu
-                elif [[ "$linux" = "raring" ]]; then
-                	fakeroot fakechroot debootstrap raring $1 http://de.archive.ubuntu.com/ubuntu
-		elif [[ "$1" = "proot" ]]; then
-			current=$(pwd)
-			mkdir -p ~/.bin/proot/ && cd ~/.bin/proot/
-			git clone https://github.com/cedric-vincent/PRoot.git /tmp/proot/
-			make -f /tmp/proot/src/GNUmakefile
-			echo "PATH=$PATH:~/.bin/proot/" >> ~/.bashrc
-			echo "export PATH" >> ~/.bashrc
-			. ~/.bashrc
-			rm -rf /tmp/proot/
-			cd $current
-		else echo -e "Creating chroots environments works without root privilegs only on Debian-based system when fakeroot, fakechroot and debootstrap are installed.\n\n"
+
+		if [[ "$1" = "proot" ]]; then
+			make_proot
+		else
+			folder=$1
+		        case "$linux" in
+		                "wheezy")       make_debian $linux $folder ;;
+		                "sid")          make_debian $linux $folder ;;
+		                "precise")      make_ubuntu $linux $folder ;;
+		                "raring")       make_ubuntu $linux $folder ;;
+		                *)              printf "Unknown or unsupported linux\n" ;;
+		        esac
 		fi
-
-
-
-
         else
-
+		folder=$1
 		if which pacstrap >/dev/null; then
-			pacstrap -dG $1
+			sudo_make_arch $folder
 		elif which debootstrap >/dev/null; then
 			linux=$(lsb_release -c|awk {'print $2'})
-	                if [[ "$linux" = "wheezy" ]]; then
-        	                debootstrap wheezy $1 http://cdn.debian.net/debian/
-                	elif [[ "$linux" = "sid" ]]; then
-                        	debootstrap sid $1 http://cdn.debian.net/debian/
-	                elif [[ "$linux" = "precise" ]]; then
-        	                debootstrap precise $1 http://de.archive.ubuntu.com/ubuntu
-                	elif [[ "$linux" = "raring" ]]; then
-                        	debootstrap raring $1 http://de.archive.ubuntu.com/ubuntu
-			else echo -e "unsupported debian distribution \n"
-			fi
+                        case "$linux" in
+                                "wheezy")       sudo_make_debian $linux $folder ;;
+                                "sid")          sudo_make_debian $linux $folder ;;
+                                "precise")      sudo_make_ubuntu $linux $folder ;;
+                                "raring")       sudo_make_ubuntu $linux $folder ;;
+                                *)              printf "Unknown or unsupported linux\n" ;;
+                        esac
 
 		elif which yum >/dev/null; then
-			echo -e "currently commented out, because it need a / directory\n"
+			printf "currently commented out, because it need a / directory\n"
 #			mkdir -p $1/devel/var/lib/rpm
 #			rpm --root $1/devel --initdb
 #			yumdownloader --destdir=/tmp fedora-release
 #			rpm --root $1/devel -ivh /tmp/fedora-release*rpm
 #			yum --installroot=$1/devel install bash yum
 #			yum --installroot=$1/devel groupinstall "minimal install"
-		else echo -e "ups, error!\n"
+		else
+			printf "ups, error!\n"
 		fi
 	fi
 
 elif (("$#" == 2)); then
 
+	linux=$1
+	folder=$2
         if [ "$UID" -ne 0 ]; then
-
-                if [[ "$1" = "wheezy" ]]; then
-                        fakeroot fakechroot debootstrap wheezy $2 http://cdn.debian.net/debian/
-                elif [[ "$1" = "sid" ]]; then
-                        fakeroot fakechroot debootstrap sid $2 http://cdn.debian.net/debian/
-                elif [[ "$1" = "precise" ]]; then
-                        fakeroot fakechroot debootstrap precise $2 http://de.archive.ubuntu.com/ubuntu
-                elif [[ "$1" = "raring" ]]; then
-                        fakeroot fakechroot debootstrap raring $2 http://de.archive.ubuntu.com/ubuntu
-                else echo -e "unsupported distribution \n"
-                fi
-
-
-
+                        case "$linux" in
+                                "wheezy")       make_debian $linux $folder ;;
+                                "sid")          make_debian $linux $folder ;;
+                                "precise")      make_ubuntu $linux $folder ;;
+                                "raring")       make_ubuntu $linux $folder ;;
+                                *)              printf "Unknown or unsupported linux\n" ;;
+                        esac
 	else
-		if [[ "$1" = "arch" ]]; then
-			pacstrap -dG $2
-		elif [[ "$1" = "wheezy" ]]; then
-			debootstrap wheezy $2 http://cdn.debian.net/debian/
-		elif [[ "$1" = "sid" ]]; then
-			debootstrap sid $2 http://cdn.debian.net/debian/
-		elif [[ "$1" = "precise" ]]; then
-			debootstrap precise $2 http://de.archive.ubuntu.com/ubuntu
-		elif [[ "$1" = "raring" ]]; then
-			debootstrap raring $2 http://de.archive.ubuntu.com/ubuntu
-		elif [[ "$1" = "fedora" ]]; then
-			echo -e "currently not implemented\n"
-		else echo -e "error\n"
 
-		fi
+                        case "$linux" in
+                                "wheezy")       sudo_make_debian $linux $folder ;;
+                                "sid")          sudo_make_debian $linux $folder ;;
+                                "precise")      sudo_make_ubuntu $linux $folder ;;
+                                "raring")       sudo_make_ubuntu $linux $folder ;;
+				"arch")		sudo_make_arch $folder ;;
+                                *)              printf "Unknown or unsupported linux\n" ;;
+                        esac
+
+
 	fi
 fi
