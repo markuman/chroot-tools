@@ -10,7 +10,19 @@ function make_debian(){
 
 function make_ubuntu(){
 
-	fakeroot fakechroot debootstrap $linux $folder http://archive.ubuntu.com/ubuntu
+	fakeroot fakechroot debootstrap --variant=minbase $linux $folder http://archive.ubuntu.com/ubuntu
+
+}
+
+function sudo_make_debian(){
+
+        debootstrap $linux $folder http://cdn.debian.net/debian/
+
+}
+
+function sudo_make_ubuntu(){
+
+        debootstrap --variant=minbase $linux $folder http://archive.ubuntu.com/ubuntu
 
 }
 
