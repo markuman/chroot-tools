@@ -11,6 +11,7 @@ chroot-tools
     * Debian 7 (Wheezy)
     * Debian Sid 
     * Fedora 19 (Schrödinger's cat)
+    * Fedora 20
   * download precompiled proot binary for x86_64
 3. `createchroot`– creates a folder install for sevaral linux distributions  
   * supported linux distributions are: 
@@ -37,10 +38,9 @@ chroot-tools
 * figure out better proot usage
 * improve `createchroot` and write a small dokumentation
 * improvements for ubuntu debootstraps needed and the handle dash error messages!
+  * any ideas?
 * fix systemd-nspawn für squeeze (add /etc/os-release file)
-* improve umount for chroot method
 * add/write/test graphical access
-* mount/link/copy `/etc/resolv.conf` from host to chroot automaticaly?
 
 ## current status 
 

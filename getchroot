@@ -87,7 +87,8 @@ elif (("$#" == 2)); then
 		"sid") 		build_chroot $1 $2 ;;
 		"precise") 	build_chroot $1 $2 ;;
 		"raring") 	build_chroot $1 $2 ;;
-		"fedora") 	build_chroot $1 $2 ;;
+		"fedora19") 	build_chroot $1 $2 ;;
+		"fedora20")	build_chroot $1 $2 ;;
 		"squeeze") 	build_chroot $1 $2 ;;
 		"update")	update_chroot $2 ;;
 		*)		echo -e "unknown option\n" ;;
