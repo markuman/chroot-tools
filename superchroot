@@ -8,40 +8,15 @@ set -e
 
 set_chroot (){
 
-        if [[ "$option" = "exit" ]]; then
-		printf "trying to umount used directories from chroot option...\n\n"
-		chroot_umount "$@"
-
-        elif [[ "$option" = "proot" ]]; then
-        	printf "forcing proot method...\n\n"
-                proot -r $folder
-
-        elif [[ "$option" = "fakechroot" ]]; then
-        	printf "forcing fakechroot method...\n\n"
-                export FAKECHROOT_EXCLUDE_PATH=/proc:/dev:/sys
-                fakechroot -s fakeroot chroot $folder
-
-        elif [[ "$option" = "systemd" ]]; then
-        	printf "forcing systemd method...\n\n"
-                systemd-nspawn -D $folder
-
-        elif [[ "$option" = "chroot" ]]; then
-        	printf "forcing chroot method...\n\n"
-                if mount | grep $folder/dev > /dev/null; then
-			chroot $folder $terminal
-                else
-                        chroot_mount "$folder"
-                        chroot $folder $terminal
-                fi
-
-
-	elif [[ "$option" = "arch" ]]; then
-		printf "forcing arch-chroot method...\n\n"
-		arch-chroot $folder
-
-        else
-                printf "unknown option\n"
-        fi
+        case "$option" in
+                "exit")         chroot_umount $folder ;;
+                "proot")        chroot_proot $folder ;;
+                "fakechroot")   chroot_fakechroot $folder ;;
+                "systemd")      chroot_systemd $folder ;;
+                "chroot")       chroot_chroot $folder ;;
+                "arch")         chroot_arch $folder ;;
+                *)              printf "unknown option\n" ;;
+        esac
 
 }
 
@@ -51,32 +26,26 @@ super_chroot(){
 
                 if which fakechroot >/dev/null; then
 			printf "fakechroot found...\n"
-                        export FAKECHROOT_EXCLUDE_PATH=/proc:/dev:/sys
-                        fakechroot -s fakeroot chroot $folder
+			chroot_fakechroot $folder
 
                 elif which proot >/dev/null; then
 			printf "proot found ...\n"
-                        proot -r $folder
+                        chroot_proot $folder
 
                 else
-                        printf "I can not find fakechroot nor proot, nor are root. Sorry, but I can\'t chroot.\n"
+                        printf "I can not find fakechroot nor proot and you aren't root. Sorry, but I can\'t chroot.\n"
                 fi
         else
 
                 if which systemd-nspawn >/dev/null; then
-                        systemd-nspawn -D $folder
+                        chroot_systemd $folder
 
 		elif which arch-chroot >/dev/null; then
-			arch-chroot $folder
+			chroot_arch $folder
 
                 else
                         printf "\nRunning classic chroot with mount -t... \n\n"
-			if mount | grep $folder/dev > /dev/null; then
-				chroot $folder $terminal
-			else
-				chroot_mount "$folder"
-        	                chroot $folder $terminal
-			fi
+			chroot_chroot $folder
                 fi
         fi
 
@@ -107,6 +76,42 @@ chroot_umount() {
 	umount "$folder/dev/shm"
 	umount "$folder/run"
 	umount "$folder/tmp"
+
+}
+
+chroot_proot(){
+
+	proot -r $folder
+
+}
+
+chroot_fakechroot(){
+
+	export FAKECHROOT_EXCLUDE_PATH=/proc:/dev:/sys
+	fakechroot -s fakeroot chroot $folder
+
+}
+
+chroot_systemd(){
+
+	systemd-nspawn -D $folder
+
+}
+
+chroot_arch(){
+
+	arch-chroot $folder
+
+}
+
+chroot_chroot(){
+
+	if mount | grep $folder/dev > /dev/null; then
+		chroot $folder $terminal
+	else
+		chroot_mount "$folder"
+		chroot $folder $terminal
+	fi
 
 }
 
