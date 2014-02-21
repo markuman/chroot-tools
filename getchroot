@@ -10,6 +10,8 @@ function build_chroot {
 	mkdir -p $2
 	if [ -f $_CHROOT/$1.tar.xz ]; then
 		tar -C $2 -xf $_CHROOT/$1.tar.xz 2> /dev/null
+		# copy resolv.conf from host into chroot
+		cp /etc/resolv.conf $2/etc/resolv.conf
 	else
 		wget -P $_CHROOT/ $GET_URL/$1.tar.xz
 		tar -C $2 -xf $_CHROOT/$1.tar.xz 2> /dev/null
