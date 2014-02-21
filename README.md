@@ -45,7 +45,6 @@ chroot-tools
 ## current status 
 
 * Debian, Arch and Fedora images are fine. For Ubuntu contrainers you may get `dash` errors on non `dash` systems.
-* Take care for network connectivity _(special in fedora!)_ in your chroot. `echo "nameserver 8.8.8.8 > /etc/resolv.conf`
 
 # Documentation / Usage
 
