@@ -56,13 +56,13 @@ super_chroot(){
 
 chroot_mount() {
 
-	mount proc "$folder/proc" -t proc
-	mount sys "$folder/sys" -t sysfs
-	mount udev "$folder/dev" -t devtmpfs
-	mount devpts "$folder/dev/pts" -t devpts
-	mount shm "$folder/dev/shm" -t tmpfs
-	mount run "$folder/run" -t tmpfs
-	mount tmp "$folder/tmp" -t tmpfs
+	mountpoint -q "$folder/proc"    || mount proc "$folder/proc" -t proc
+	mountpoint -q "$folder/sys"     || mount sys "$folder/sys" -t sysfs
+	mountpoint -q "$folder/dev"     || mount udev "$folder/dev" -t devtmpfs
+	mountpoint -q "$folder/dev/pts" || mount devpts "$folder/dev/pts" -t devpts
+	mountpoint -q "$folder/dev/shm" || mount shm "$folder/dev/shm" -t tmpfs
+	mountpoint -q "$folder/run"     || mount run "$folder/run" -t tmpfs
+	mountpoint -q "$folder/tmp"     || mount tmp "$folder/tmp" -t tmpfs
 
 }
 
