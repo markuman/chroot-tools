@@ -68,14 +68,14 @@ chroot_mount() {
 
 chroot_umount() {
 
-	printf "Trying to umount chroot folder ...\n"
-	umount "$folder/proc"
-	umount "$folder/sys"
-	umount "$folder/dev/pts"
-	umount "$folder/dev/shm"
-	umount "$folder/dev"
-	umount "$folder/run"
-	umount "$folder/tmp"
+	printf "Doing lazy umount chroot folder ...\n"
+	umount -l "$folder/proc"
+	umount -l "$folder/sys"
+	umount -l "$folder/dev/pts"
+	umount -l "$folder/dev/shm"
+	umount -l "$folder/dev"
+	umount -l "$folder/run"
+	umount -l "$folder/tmp"
 
 }
 
