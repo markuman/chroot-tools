@@ -34,11 +34,24 @@ function update_chroot {
 
 function print_help {
 
-        echo '
+        echo "
         ./getchroot [option] <folder>
 
-        [option]: arch squeeze wheezy sid precise raring fedora
+        [option]:
+	    arch:	Arch Linux
+	    squeeze:  	Debian 6 Squeeze
+	    wheezy: 	Debian 7 Wheezy
+	    sid:	Debian Unstable
+	    precise:	Ubuntu LTS 12.04, Precise Pangolin
+	    raring:	Ubuntu 13.04, Raring Ringtail
+	    fedora19: 	Fedora 19, Schrödinger's cat
+	    fedora20:	Fedora 20, Heisenbug
+
         This will download a prepared tar.xz file to $_CHROOT and extract to your given folder
+
+        ./getchroot update [option]
+
+        This will compare and download a prepared tar.xz file to $_CHROOT for later usage
 
         EXAMPLES
 
@@ -46,8 +59,11 @@ function print_help {
         This will download arch.tar.xz to $_CHROOT if not available and extract it to mychrootarch/
 
 	:~$ ./getchroot update arch
-	This will compare your local tar.xz container file with the online version. If they are different, it will be downloaded again.
-        '
+	This will compare your local arch.tar.xz container file with the online version. If they are different, it will be downloaded again.
+	Then do
+	:~$ ./getchroot arch mychrootarch/
+	to update to the latest container.
+        "
 
 }
 
